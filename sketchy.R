@@ -1,7 +1,8 @@
-# this file defines the necessary functions to implement the "sketchy lines
-# algorithm" by Wood et al 2012. no external libraries are used. the final
-# product is a function `sketchylines(x, y, roughness, strokes, ...)` that can
-# be used as a replacement for the base graphics function `lines(x, y, ...)`
+# This file defines the necessary functions to implement the "sketchy lines
+# algorithm" by Wood et al 2012 (http://dx.doi.org/10.1109/TVCG.2012.262). No
+# external libraries are used. The final product is a function `sketchylines(x,
+# y, roughness, strokes, ...)` that can be used as a replacement for the base
+# graphics function `lines(x, y, ...)`
 
 #' Helper function used by catmull_rom_spline
 tp1 = function(ti, Pi, Pj, alpha) {
@@ -24,14 +25,14 @@ catmull_rom_spline = function(P0, P1, P2, P3, n_points=50, alpha=.5) {
   A3 = (t3-tt)/(t3-t2)*P2 + (tt-t2)/(t3-t2)*P3
   B1 = (t2-tt)/(t2-t0)*A1 + (tt-t0)/(t2-t0)*A2
   B2 = (t3-tt)/(t3-t1)*A2 + (tt-t1)/(t3-t1)*A3
-  CC  = (t2-tt)/(t2-t1)*B1 + (tt-t1)/(t2-t1)*B2
+  CC = (t2-tt)/(t2-t1)*B1 + (tt-t1)/(t2-t1)*B2
 
   return(CC)
 
 }
 
 
-#' interpolate n points by a catmull rom splines (P is a matrix with 2 columns,
+#' Interpolate n points by a catmull rom splines (P is a matrix with 2 columns,
 #' x and y coords)
 catmull_rom_chain = function(P, n_points=50, alpha=.5) {
     nP = nrow(P)
@@ -44,7 +45,7 @@ catmull_rom_chain = function(P, n_points=50, alpha=.5) {
     return(C)
 }
 
-#' connect points xy1, xy2 with a "sketchy" line as described in Wood et al
+#' Connect points xy1, xy2 with a "sketchy" line as described in Wood et al
 #' 2012 (minor modification in calculation of roughness)
 sketchyline = function(xy1, xy2, roughness=0.01, strokes=2, ...) {
 
@@ -58,10 +59,10 @@ sketchyline = function(xy1, xy2, roughness=0.01, strokes=2, ...) {
   xymid1 = (xy2 + xy1) / 2
   xymid2 = (3 * xy2 + xy1) / 4
   
-  # combine them
+  # combine points
   xynew = rbind(xy0, xy1, xymid1, xymid2, xy2, xy3)
   
-  # create 2 copies with added noise
+  # create copies of xy with added noise
   noise = replicate(strokes, c(rep(0,2), runif(8, -roughness*ll, roughness*ll), rep(0,2)), simplify=FALSE)
   xynewn = lapply(1:strokes, function(ii) xynew + noise[[ii]])
   
@@ -74,7 +75,7 @@ sketchyline = function(xy1, xy2, roughness=0.01, strokes=2, ...) {
 
 }
 
-#' connect n points by "sketchy" lines, `sketchylines` can be used as a
+#' Connect n points by "sketchy" lines, `sketchylines` can be used as a
 #' replacement for `lines`
 sketchylines = function(x, y, roughness=0.01, strokes=2, ...) {
   n = length(x) 
